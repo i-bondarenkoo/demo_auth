@@ -12,7 +12,7 @@ router = APIRouter(
 )
 
 
-@router.post("/", response_model=ResponseUserSchema)
+@router.post("/register", response_model=ResponseUserSchema)
 async def create_user(
     user_in: Annotated[
         CreateUserSchema, Body(description="Данные пользователя для создания записи")
