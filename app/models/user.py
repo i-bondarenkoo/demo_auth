@@ -10,6 +10,6 @@ class User(Base):
     last_name: Mapped[str] = mapped_column(String(100))
     password_hash: Mapped[bytes]
     is_active: Mapped[bool] = mapped_column(
-        server_default=True,
+        server_default="true",
         default=True,
     )
