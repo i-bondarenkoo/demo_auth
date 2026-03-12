@@ -8,6 +8,6 @@ services:
       PGDATA: /var/lib/postgresql/data
     ports:
         #слева внешний порт/ внутренний порт контейнера
-      - "5435:5432"
+      - "5437:5432"
     volumes:
       - ./postgresdata:/var/lib/postgresql/data
