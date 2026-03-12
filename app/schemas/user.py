@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from pydantic import EmailStr
 
 
@@ -16,3 +16,9 @@ class ResponseUserSchema(BaseModel):
     first_name: str
     last_name: str
     is_active: bool
+    model_config = ConfigDict(from_attributes=True)
+
+
+class LoginUserSchema(BaseModel):
+    username: str
+    password: str
