@@ -22,3 +22,9 @@ class ResponseUserSchema(BaseModel):
 class LoginUserSchema(BaseModel):
     username: str
     password: str
+
+
+class PatchUpdateUserSchema(BaseModel):
+    first_name: str | None = None
+    last_name: str | None = None
+    password: str | None = None

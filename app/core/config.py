@@ -11,7 +11,7 @@ class ServerRunCfg(BaseModel):
 class AuthJWT(BaseModel):
     algorithm: str = "HS256"
     key: str = "bb5c7496947f8ffef547ab2dbc12936b9bdba8f8413bfc8479373077d9880690"
-    access_token_expire_minutes: int = 30
+    access_token_expire_minutes: int = 2
 
 
 class Settings(BaseSettings):

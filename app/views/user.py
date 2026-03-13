@@ -1,10 +1,12 @@
 from fastapi import APIRouter, Body, Depends, HTTPException, status
 from typing import Annotated
-from app.schemas.user import CreateUserSchema, ResponseUserSchema
+from app.schemas.user import CreateUserSchema, ResponseUserSchema, PatchUpdateUserSchema
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.database.db_constructor import db_constructor
-from app.crud.user import create_user_crud
+from app.crud.user import create_user_crud, update_user_crud
 from sqlalchemy.exc import IntegrityError
+from app.auth.dependencies import get_current_user
+from app.models.user import User
 
 router = APIRouter(
     prefix="/users",
@@ -34,3 +36,24 @@ async def create_user(
             detail="Пользователь с такими данными уже существует",
         )
     return user
+
+
+@router.patch("/me", response_model=ResponseUserSchema)
+async def update_user(
+    user_data: Annotated[
+        PatchUpdateUserSchema, Body(description="Данные для обновления пользователя")
+    ],
+    user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(db_constructor.get_session),
+):
+    update_user = await update_user_crud(
+        user_data=user_data,
+        user=user,
+        session=session,
+    )
+    if update_user == "not user_data":
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Данные для обновления не переданы",
+        )
+    return update_user

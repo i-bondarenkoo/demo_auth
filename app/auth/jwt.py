@@ -45,8 +45,8 @@ def decode_jwt(
 def create_access_token(user: User) -> str:
     data: dict = {
         "id": user.id,
-        "first_name": user.first_name,
-        "last_name": user.last_name,
+        # "first_name": user.first_name,
+        # "last_name": user.last_name,
     }
     return endode_jwt(
         payload=data,

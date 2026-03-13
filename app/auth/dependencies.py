@@ -1,11 +1,15 @@
 from fastapi import Form, Depends, HTTPException, status
 from app.database.db_constructor import db_constructor
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.crud.user import get_user_by_email_crud
+from app.crud.user import get_user_by_email_crud, get_user_by_id_crud
 from app.utils.helpers import verify_password
+from app.models.user import User
+from app.auth.jwt import decode_jwt
+from jwt.exceptions import InvalidTokenError
+from app.auth.security import oauth2_scheme
 
 
-async def get_current_user(
+async def authenticate_user(
     username: str = Form(),
     password: str = Form(),
     session: AsyncSession = Depends(db_constructor.get_session),
@@ -23,3 +27,35 @@ async def get_current_user(
     ):
         raise error
     return user_db
+
+
+async def get_current_user(
+    token=Depends(oauth2_scheme),
+    session: AsyncSession = Depends(db_constructor.get_session),
+):
+    try:
+        decode_token: dict = decode_jwt(token)
+    except InvalidTokenError as e:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Пользователь не авторизован",
+        )
+    user_id = decode_token["id"]
+    user_db = await get_user_by_id_crud(user_id=user_id, session=session)
+    if user_db is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Пользователь не авторизован",
+        )
+    return user_db
+
+
+async def get_current_active_user(
+    user: User = Depends(authenticate_user),
+):
+    if user.is_active:
+        return user
+    raise HTTPException(
+        status_code=status.HTTP_403_FORBIDDEN,
+        detail="Пользователь не активен",
+    )

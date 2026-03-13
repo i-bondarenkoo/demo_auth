@@ -1,4 +1,4 @@
-from app.schemas.user import CreateUserSchema
+from app.schemas.user import CreateUserSchema, PatchUpdateUserSchema
 from app.models.user import User
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -19,10 +19,32 @@ async def create_user_crud(user_in: CreateUserSchema, session: AsyncSession):
     return new_user
 
 
+async def get_user_by_id_crud(user_id: int, session: AsyncSession):
+    return await session.get(User, user_id)
+
+
 async def get_user_by_email_crud(email: str, session: AsyncSession):
     stmt = select(User).where(User.email == email)
     result = await session.execute(stmt)
     user = result.scalars().one_or_none()
     if user is None:
         return None
+    return user
+
+
+async def update_user_crud(
+    user_data: PatchUpdateUserSchema,
+    session: AsyncSession,
+    user: User,
+):
+    user_data: dict = user_data.model_dump(exclude_unset=True)
+    if len(user_data) == 0:
+        return "not user_data"
+    if "password" in user_data:
+        user.password_hash = hash_passwd(user_data["password"])
+        user_data.pop("password")
+    for key, value in user_data.items():
+        setattr(user, key, value)
+    await session.commit()
+    await session.refresh(user)
     return user
