@@ -48,3 +48,12 @@ async def update_user_crud(
     await session.commit()
     await session.refresh(user)
     return user
+
+
+async def deactivate_user_crud(user: User, session: AsyncSession):
+    user.is_active = False
+    await session.commit()
+    await session.refresh(user)
+    return {
+        "message": "Аккаунт деактивирован",
+    }

@@ -3,9 +3,9 @@ from typing import Annotated
 from app.schemas.user import CreateUserSchema, ResponseUserSchema, PatchUpdateUserSchema
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.database.db_constructor import db_constructor
-from app.crud.user import create_user_crud, update_user_crud
+from app.crud.user import create_user_crud, update_user_crud, deactivate_user_crud
 from sqlalchemy.exc import IntegrityError
-from app.auth.dependencies import get_current_user
+from app.auth.dependencies import get_current_user, get_current_active_user
 from app.models.user import User
 
 router = APIRouter(
@@ -43,7 +43,7 @@ async def update_user(
     user_data: Annotated[
         PatchUpdateUserSchema, Body(description="Данные для обновления пользователя")
     ],
-    user: User = Depends(get_current_user),
+    user: User = Depends(get_current_active_user),
     session: AsyncSession = Depends(db_constructor.get_session),
 ):
     update_user = await update_user_crud(
@@ -57,3 +57,11 @@ async def update_user(
             detail="Данные для обновления не переданы",
         )
     return update_user
+
+
+@router.delete("/me")
+async def deactivate_user(
+    user: User = Depends(get_current_active_user),
+    session: AsyncSession = Depends(db_constructor.get_session),
+):
+    return await deactivate_user_crud(user=user, session=session)

@@ -17,3 +17,8 @@ async def login(user: User = Depends(authenticate_user)):
     return ResponseTokenSchema(
         access_token=access_token,
     )
+
+
+@router.post("/logout")
+async def logout():
+    return {"message": "logout"}
