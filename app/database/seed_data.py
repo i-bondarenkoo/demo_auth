@@ -27,21 +27,21 @@ async def seed_data():
             first_name="John",
             last_name="Backer",
             password_hash=hash_passwd("secret123"),
-            rode_id=admin.id,
+            role_id=admin.id,
         )
         margaret = User(
             email="margo@mail.ru",
             first_name="Margo",
             last_name="White",
             password_hash=hash_passwd("qwerty443"),
-            rode_id=manager.id,
+            role_id=manager.id,
         )
         andy = User(
             email="andy@mail.ru",
             first_name="Andy",
             last_name="Orton",
             password_hash=hash_passwd("supersecret21"),
-            rode_id=manager.id,
+            role_id=manager.id,
             is_active=False,
         )
         session.add_all(
