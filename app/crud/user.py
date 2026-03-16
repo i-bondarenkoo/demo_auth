@@ -1,8 +1,11 @@
 from app.schemas.user import CreateUserSchema, PatchUpdateUserSchema
 from app.models.user import User
+
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from app.utils.helpers import hash_passwd
+
+from sqlalchemy import select
 
 
 async def create_user_crud(user_in: CreateUserSchema, session: AsyncSession):
