@@ -8,3 +8,4 @@ DELETE_ALL = "delete_all_permission"
 
 PRODUCT = 1
 CATEGORY = 2
+ACCESS_RULES = 3

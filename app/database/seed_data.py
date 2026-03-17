@@ -70,10 +70,12 @@ async def seed_data():
             ]
         )
         await session.flush()
-
+        access_rules_element = BusinessElement(name="access_rules")
+        session.add(access_rules_element)
+        await session.flush()
         rule1 = AccessRole(
             role_id=admin.id,
-            element_id=products_element.id,
+            element_id=access_rules_element.id,
             read_permission=True,
             read_all_permission=True,
             create_permission=True,
