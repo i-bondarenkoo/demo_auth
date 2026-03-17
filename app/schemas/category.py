@@ -5,3 +5,8 @@ class ResponseCategory(BaseModel):
     id: int
     category_type: str
     count_instance: int
+
+
+class CreateCategory(BaseModel):
+    category_type: str
+    count_instance: int

@@ -29,37 +29,52 @@ async def get_user_by_id_with_role_and_permission(
     return user
 
 
-async def check_read_permission_for_user(
-    user=Depends(get_user_by_id_with_role_and_permission),
-):
-    if user is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Пользователь не авторизован",
-        )
-    return user
-
-
-def all_read_permission_checker(element_idx: int):
-    async def checker(user: User = Depends(get_user_by_id_with_role_and_permission)):
+def validate_permission(element_id: int, action: str):
+    async def check_permission_for_user(
+        user: User = Depends(get_user_by_id_with_role_and_permission),
+    ):
         for rule in user.role.access_role_rules:
-            if rule.element_id == element_idx and rule.read_all_permission:
+            if rule.element_id == element_id and getattr(rule, action):
                 return user
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Недостаточно прав для доступа к ресурсам",
         )
 
-    return checker
+    return check_permission_for_user
 
 
-async def check_update_permission_for_user(
-    user=Depends(get_user_by_id_with_role_and_permission),
-):
-    for rule in user.role.access_role_rules:
-        if rule.element_id == 1 or rule.elemnet_id == 2 and rule.update_permission:
-            return user
-    raise HTTPException(
-        status_code=status.HTTP_403_FORBIDDEN,
-        detail="Недостаточно прав для доступа к ресурсам",
-    )
+# async def check_read_permission_for_user(
+#     user=Depends(get_user_by_id_with_role_and_permission),
+# ):
+#     if user is None:
+#         raise HTTPException(
+#             status_code=status.HTTP_401_UNAUTHORIZED,
+#             detail="Пользователь не авторизован",
+#         )
+#     return user
+
+
+# def all_read_permission_checker(element_idx: int):
+#     async def checker(user: User = Depends(get_user_by_id_with_role_and_permission)):
+#         for rule in user.role.access_role_rules:
+#             if rule.element_id == element_idx and rule.read_all_permission:
+#                 return user
+#         raise HTTPException(
+#             status_code=status.HTTP_403_FORBIDDEN,
+#             detail="Недостаточно прав для доступа к ресурсам",
+#         )
+
+#     return checker
+
+
+# async def check_update_permission_for_user(
+#     user=Depends(get_user_by_id_with_role_and_permission),
+# ):
+#     for rule in user.role.access_role_rules:
+#         if rule.element_id == 1 or rule.elemnet_id == 2 and rule.update_permission:
+#             return user
+#     raise HTTPException(
+#         status_code=status.HTTP_403_FORBIDDEN,
+#         detail="Недостаточно прав для доступа к ресурсам",
+#     )

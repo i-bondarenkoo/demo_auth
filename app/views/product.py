@@ -2,11 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException, status, Path, Body
 from app.models.user import User
 from typing import Annotated
 from app.schemas.product import ResponseProduct, PatchProductUpdate
-from app.crud.dep_views import (
-    check_read_permission_for_user,
-    all_read_permission_checker,
-    check_update_permission_for_user,
-)
+from app.crud.dep_views import validate_permission
+from app.utils.const import READ, READ_ALL, UPDATE, PRODUCT
 
 router = APIRouter(
     prefix="/products",
@@ -16,7 +13,7 @@ router = APIRouter(
 
 @router.get("/", status_code=status.HTTP_200_OK)
 async def get_all_products(
-    user: User = Depends(all_read_permission_checker(element_idx=1)),
+    user: User = Depends(validate_permission(element_id=PRODUCT, action=READ_ALL)),
 ):
     product1 = ResponseProduct(
         id=2,
@@ -37,7 +34,7 @@ async def update_product(
         int, Path(ge=1, description="ID продукта для обновления информации")
     ],
     product_in: Annotated[PatchProductUpdate, Body()],
-    user: User = Depends(check_update_permission_for_user),
+    user: User = Depends(validate_permission(element_id=PRODUCT, action=UPDATE)),
 ):
     data: dict = product_in.model_dump(exclude_unset=True)
     if len(data) == 0:
@@ -64,7 +61,7 @@ async def get_product_by_id(
     product_id: Annotated[
         int, Path(ge=1, description="ID продукта для получения информации")
     ],
-    user: User = Depends(check_read_permission_for_user),
+    user: User = Depends(validate_permission(element_id=PRODUCT, action=READ)),
 ):
     return ResponseProduct(
         id=product_id,
