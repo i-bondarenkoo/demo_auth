@@ -3,6 +3,7 @@ from pydantic import EmailStr
 
 
 class CreateUserSchema(BaseModel):
+    role_id: int
     email: EmailStr
     first_name: str
     last_name: str

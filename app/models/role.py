@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from app.models.user import User
-    from app.models.access_role import AccessRole
+    from app.models.access_rule import AccessRule
 
 
 class Role(Base):
@@ -18,8 +18,8 @@ class Role(Base):
         back_populates="role",
     )
 
-    access_role_rules: Mapped[list["AccessRole"]] = relationship(
-        "AccessRole",
+    access_role_rules: Mapped[list["AccessRule"]] = relationship(
+        "AccessRule",
         back_populates="role",
         cascade="all, delete-orphan",
     )

@@ -1,11 +1,11 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from app.models.access_role import AccessRole
+from app.models.access_rule import AccessRule
 from app.schemas.access_rule import UpdateAccessRule, CreateAccessRule
 
 
 async def create_access_rule_crud(data_in: CreateAccessRule, session: AsyncSession):
-    new_row = AccessRole(**data_in.model_dump())
+    new_row = AccessRule(**data_in.model_dump())
     session.add(new_row)
     await session.commit()
     await session.refresh(new_row)
@@ -17,7 +17,7 @@ async def get_access_rule_by_id_crud(access_rule_id: int, session: AsyncSession)
     # result = await session.execute(stmt)
     # rules = result.scalars().one_or_none()
     # return rules
-    return await session.get(AccessRole, access_rule_id)
+    return await session.get(AccessRule, access_rule_id)
 
 
 async def update_access_rule_crud(

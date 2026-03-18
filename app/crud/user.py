@@ -11,6 +11,7 @@ from sqlalchemy import select
 async def create_user_crud(user_in: CreateUserSchema, session: AsyncSession):
 
     new_user = User(
+        role_id=user_in.role_id,
         email=user_in.email,
         first_name=user_in.first_name,
         last_name=user_in.last_name,

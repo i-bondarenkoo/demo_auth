@@ -7,6 +7,7 @@ from app.crud.user import create_user_crud, update_user_crud, deactivate_user_cr
 from sqlalchemy.exc import IntegrityError
 from app.auth.dependencies import get_current_user, get_current_active_user
 from app.models.user import User
+from app.crud.role import get_role_by_id_crud
 
 router = APIRouter(
     prefix="/users",
@@ -21,6 +22,12 @@ async def create_user(
     ],
     session: AsyncSession = Depends(db_constructor.get_session),
 ):
+    check_role = await get_role_by_id_crud(role_id=user_in.role_id, session=session)
+    if check_role is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Роль для пользователя не найдена",
+        )
     if user_in.password != user_in.password_repeat:
 
         raise HTTPException(

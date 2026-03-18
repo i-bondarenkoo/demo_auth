@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from app.models.business_element import BusinessElement
 
 
-class AccessRole(Base):
+class AccessRule(Base):
     __tablename__ = "access_role_rules"
     __table_args__ = (
         UniqueConstraint(

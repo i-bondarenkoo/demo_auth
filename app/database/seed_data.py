@@ -1,7 +1,7 @@
 from app.models.user import User
 from app.models.role import Role
 from app.models.business_element import BusinessElement
-from app.models.access_role import AccessRole
+from app.models.access_rule import AccessRule
 from app.utils.helpers import hash_passwd
 
 from app.database.db_constructor import db_constructor
@@ -73,7 +73,7 @@ async def seed_data():
         access_rules_element = BusinessElement(name="access_rules")
         session.add(access_rules_element)
         await session.flush()
-        rule1 = AccessRole(
+        rule1 = AccessRule(
             role_id=admin.id,
             element_id=access_rules_element.id,
             read_permission=True,
@@ -84,7 +84,7 @@ async def seed_data():
             delete_permission=True,
             delete_all_permission=True,
         )
-        rule2 = AccessRole(
+        rule2 = AccessRule(
             role_id=manager.id,
             element_id=products_element.id,
             read_permission=True,
@@ -92,7 +92,7 @@ async def seed_data():
             update_permission=True,
             delete_permission=True,
         )
-        rule3 = AccessRole(
+        rule3 = AccessRule(
             role_id=user.id,
             element_id=category_element.id,
             read_permission=True,
@@ -100,13 +100,13 @@ async def seed_data():
             update_permission=True,
             delete_all_permission=True,
         )
-        rule4 = AccessRole(
+        rule4 = AccessRule(
             role_id=manager.id,
             element_id=category_element.id,
             read_permission=True,
             create_permission=True,
         )
-        rule5 = AccessRole(
+        rule5 = AccessRule(
             role_id=admin.id,
             element_id=category_element.id,
             read_permission=True,

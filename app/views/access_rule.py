@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends, status, Path, HTTPException, Body
-from requests import session
 from app.crud.acess_rule import (
     get_access_rule_by_id_crud,
     update_access_rule_crud,
