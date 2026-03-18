@@ -17,7 +17,7 @@ async def get_user_by_id_with_role_and_permission(
         select(User)
         .where(User.id == user_id)
         .options(
-            selectinload(User.role).options(
+            joinedload(User.role).options(
                 selectinload(Role.access_role_rules),
             )
         )

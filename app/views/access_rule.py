@@ -41,13 +41,13 @@ async def create_access_rule(
     if check_element is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Объект business_element найден",
+            detail="Объект не найден",
         )
     check_role = await get_role_by_id_crud(role_id=data_in.role_id, session=session)
     if check_role is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Объект role не найден",
+            detail="Объект  не найден",
         )
     try:
         new_row = await create_access_rule_crud(data_in=data_in, session=session)
