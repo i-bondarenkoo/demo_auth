@@ -1,7 +1,15 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from app.models.access_role import AccessRole
-from app.schemas.access_rule import UpdateAccessRule
+from app.schemas.access_rule import UpdateAccessRule, CreateAccessRule
+
+
+async def create_access_rule_crud(data_in: CreateAccessRule, session: AsyncSession):
+    new_row = AccessRole(**data_in.model_dump())
+    session.add(new_row)
+    await session.commit()
+    await session.refresh(new_row)
+    return new_row
 
 
 async def get_access_rule_by_id_crud(access_rule_id: int, session: AsyncSession):
@@ -32,3 +40,14 @@ async def update_access_rule_crud(
     await session.commit()
     await session.refresh(rule_row)
     return rule_row
+
+
+async def delete_access_rule_crud(access_rule_id: int, session: AsyncSession):
+    access_rule = await get_access_rule_by_id_crud(
+        access_rule_id=access_rule_id, session=session
+    )
+    if access_rule is None:
+        return None
+    await session.delete(access_rule)
+    await session.commit()
+    return {"message": "запись удалена"}

@@ -1,4 +1,16 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
+
+
+class CreateAccessRule(BaseModel):
+    role_id: int = Field(ge=1)
+    element_id: int = Field(ge=1)
+    read_permission: bool
+    read_all_permission: bool
+    create_permission: bool
+    update_permission: bool
+    update_all_permission: bool
+    delete_permission: bool
+    delete_all_permission: bool
 
 
 class ResponseAccessRule(BaseModel):
